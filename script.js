@@ -1,4 +1,4 @@
-const backendUrl = 'https://backend-88jt.onrender.com'; // your backend URL
+const backendUrl = 'https://chatbot-mdp.onrender.com'; // your backend URL
 
 document.getElementById('askBtn').addEventListener('click', async () => {
   const question = document.getElementById('questionInput').value.trim();
