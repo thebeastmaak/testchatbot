@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medical Chatbot Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    textarea {
+      width: 100%;
+      font-size: 16px;
+      padding: 8px;
+      height: 100px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #answer {
+      margin-top: 20px;
+      background: #f1f1f1;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+    #error {
+      color: red;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Medical Chatbot Test</h1>
+
+  <textarea id="question" placeholder="Ask your question here..."></textarea><br />
+  <button id="askBtn">Ask</button>
+
+  <div id="error"></div>
+  <div id="answer"></div>
+
+  <script>
+    const backendUrl = 'https://chatbot-mdp.onrender.com'; // <-- Change to your backend URL
+
+    document.getElementById('askBtn').addEventListener('click', async () => {
+      const question = document.getElementById('question').value.trim();
+      const errorDiv = document.getElementById('error');
+      const answerDiv = document.getElementById('answer');
+
+      errorDiv.textContent = '';
+      answerDiv.textContent = '';
+
+      if (!question) {
+        errorDiv.textContent = 'Please enter a question.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${backendUrl}/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question }),
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Server error');
+        }
+
+        const data = await res.json();
+        answerDiv.textContent = data.answer || JSON.stringify(data);
+      } catch (err) {
+        errorDiv.textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
